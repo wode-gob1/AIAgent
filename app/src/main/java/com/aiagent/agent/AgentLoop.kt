@@ -60,6 +60,13 @@ class AgentLoop(
     }
 
     /**
+     * 配置变更时刷新 LLMClient 缓存
+     */
+    fun invalidateCache() {
+        llmClient.invalidateCache()
+    }
+
+    /**
      * 执行一次完整的 Agent 闭环
      */
     suspend fun run(

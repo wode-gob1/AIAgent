@@ -46,11 +46,6 @@ class MainActivity : ComponentActivity() {
         configManager = app.configManager
         experienceDao = app.database.experienceDao()
 
-        // 配置变更时刷新 LLMClient 缓存
-        val onConfigSavedWithCacheClear: () -> Unit = {
-            app.llmClient.invalidateCache()
-        }
-
         // 初始化工具注册中心
         val toolRegistry = ToolRegistry()
         toolRegistry.register(ImageAnalysisTool())
@@ -179,7 +174,7 @@ private fun MainNavigation(
                 SettingsScreen(
                     configManager = configManager,
                     onConfigSaved = {
-                        onConfigSavedWithCacheClear()
+                        agentLoop.invalidateCache()
                         isConfigured = true
                         coroutineScope.launch {
                             navController.navigate("chat") {

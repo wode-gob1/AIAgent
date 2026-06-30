@@ -29,6 +29,7 @@ import coil.compose.AsyncImage
 import com.aiagent.agent.AgentLoop
 import com.aiagent.agent.AgentResult
 import com.aiagent.agent.ChatMessage
+import com.aiagent.tools.bitmapToBase64
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
