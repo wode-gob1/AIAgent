@@ -55,13 +55,13 @@ fun ChatScreen(
 
     // 响应 Agent 状态变化
     LaunchedEffect(agentState) {
-        when (agentState) {
+        when (val state = agentState) {
             is AgentResult.Thinking -> {
-                statusText = agentState.message
+                statusText = state.message
             }
             is AgentResult.Success -> {
                 messages.add(
-                    ChatMessage(role = "assistant", content = agentState.content)
+                    ChatMessage(role = "assistant", content = state.content)
                 )
                 isProcessing = false
                 statusText = ""
@@ -71,7 +71,7 @@ fun ChatScreen(
             }
             is AgentResult.Failure -> {
                 messages.add(
-                    ChatMessage(role = "assistant", content = "抱歉: ${agentState.error}")
+                    ChatMessage(role = "assistant", content = "抱歉: ${state.error}")
                 )
                 isProcessing = false
                 statusText = ""

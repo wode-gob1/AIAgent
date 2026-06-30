@@ -1,6 +1,7 @@
 package com.aiagent.llm
 
 import android.util.Log
+import com.aiagent.BuildConfig
 import com.aiagent.config.ConfigManager
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
