@@ -76,7 +76,7 @@ $simplifiedConversation
                     ?: return@withContext
 
                 val jsonStr = extractJson(content)
-                val parsed = gson.fromJson(jsonStr, ExperienceData::class.java)
+                val parsed = gson.fromJson(jsonStr, ReflectExperienceData::class.java)
 
                 val existing = dao.searchByType(parsed.taskType)
                 if (existing.isNotEmpty()) {
@@ -122,7 +122,7 @@ $simplifiedConversation
         return text
     }
 
-    data class ExperienceData(
+    data class ReflectExperienceData(
         val taskType: String,
         val keywords: String,
         val steps: List<String>,

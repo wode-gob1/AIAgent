@@ -129,7 +129,7 @@ class AgentLoop(
             cachedBase64 = bitmapToBase64(image)
             ContentWrapper(listOf(
                 ContentPart(type = "text", text = userText),
-                ContentPart(type = "image_url", imageUrl = ImageUrl("data:image/jpeg;base64,$cachedBase64"))
+                ContentPart(type = "image_url", imageUrl = ImageUrl(cachedBase64))
             ))
         } else {
             ContentWrapper(userText)

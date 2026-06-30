@@ -219,12 +219,8 @@ fun ChatScreen(
 
                                 isProcessing = true
                                 val bitmap = selectedBitmap.value
-                                // 获取图片的 base64 用于消息气泡显示
-                                val imgBase64 = if (bitmap != null) {
-                                    val baos = java.io.ByteArrayOutputStream()
-                                    bitmap.compress(android.graphics.Bitmap.CompressFormat.JPEG, 60, baos)
-                                    "data:image/jpeg;base64,${Base64.encodeToString(baos.toByteArray(), Base64.NO_WRAP)}"
-                                } else null
+                                // 获取图片的 base64 用于消息气泡显示（使用安全缩放）
+                                val imgBase64 = bitmap?.let { bitmapToBase64(it) }
 
                                 messages.add(
                                     ChatMessage(
@@ -236,8 +232,20 @@ fun ChatScreen(
                                 inputText = ""
 
                                 coroutineScope.launch {
-                                    listState.animateScrollToItem(messages.size)
-                                    agentLoop.run(text, image = bitmap)
+                                    try {
+                                        listState.animateScrollToItem(messages.size)
+                                        agentLoop.run(text, image = bitmap)
+                                    } catch (e: Exception) {
+                                        messages.add(
+                                            ChatMessage(
+                                                role = "assistant",
+                                                content = "请求出错: ${e.message ?: "未知错误"}"
+                                            )
+                                        )
+                                    } finally {
+                                        isProcessing = false
+                                        statusText = ""
+                                    }
                                 }
                             },
                             enabled = !isProcessing && inputText.isNotBlank()

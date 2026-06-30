@@ -37,11 +37,16 @@ class ImageAnalysisTool : BaseTool() {
 
         return try {
             val messages = listOf(
-                mapOf(
-                    "role" to "user",
-                    "content" to listOf(
-                        mapOf("type" to "text", "text" to instruction),
-                        mapOf("type" to "image_url", "image_url" to mapOf("url" to imageBase64))
+                com.aiagent.llm.Message(
+                    role = "user",
+                    content = com.aiagent.llm.ContentWrapper(
+                        listOf(
+                            com.aiagent.llm.ContentPart(type = "text", text = instruction),
+                            com.aiagent.llm.ContentPart(
+                                type = "image_url",
+                                imageUrl = com.aiagent.llm.ImageUrl(imageBase64)
+                            )
+                        )
                     )
                 )
             )

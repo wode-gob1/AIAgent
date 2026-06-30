@@ -120,7 +120,7 @@ data class ToolCall(
 )
 
 data class FunctionCall(
-    val name: String,
+    val name: String? = null,
     val arguments: String? = null
 )
 

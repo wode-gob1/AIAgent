@@ -57,17 +57,24 @@ class LLMClient(private val configManager: ConfigManager) {
         chain.proceed(request.build())
     }
 
+    // 缓存的 OkHttpClient 实例
+    @Volatile
+    private var cachedOkHttpClient: OkHttpClient? = null
+
     /**
      * 获取或创建共享的 OkHttpClient（单例）
      */
     private fun getSharedOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(120, TimeUnit.SECONDS)  // LLM 响应可能较慢
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .addInterceptor(authInterceptor)
-            .addInterceptor(loggingInterceptor)
-            .build()
+        return cachedOkHttpClient ?: synchronized(this) {
+            cachedOkHttpClient ?: OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)  // LLM 响应可能较慢
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(authInterceptor)
+                .addInterceptor(loggingInterceptor)
+                .build()
+                .also { cachedOkHttpClient = it }
+        }
     }
 
     /**
@@ -107,6 +114,7 @@ class LLMClient(private val configManager: ConfigManager) {
     fun invalidateCache() {
         cachedRetrofit = null
         cachedConfigHash = null
+        cachedOkHttpClient = null
     }
 
     suspend fun chat(request: ChatRequest): ChatResponse {
